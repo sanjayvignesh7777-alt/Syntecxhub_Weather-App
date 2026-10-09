@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SkyPulse - Professional Weather Dashboard created for Syntecxhub Internship Project 1" />
+  <title>SkyPulse | Syntecxhub Weather Dashboard</title>
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Ambient Atmospheric Glowing Orbs -->
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+  <div class="ambient-glow glow-3" aria-hidden="true"></div>
+
+  <div class="app-wrapper">
+    <!-- Top Navigation & Brand Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="app-title">SkyPulse</h1>
+          <span class="internship-badge">Syntecxhub Project 1</span>
+        </div>
+      </div>
+
+      <!-- Action Controls -->
+      <div class="header-actions">
+        <!-- Unit Toggle (°C / °F) -->
+        <button id="unitToggleBtn" class="btn btn-secondary unit-toggle" title="Toggle temperature unit (°C / °F)" aria-label="Toggle Temperature Unit">
+          <span class="unit-option unit-c active">°C</span>
+          <span class="unit-divider">/</span>
+          <span class="unit-option unit-f">°F</span>
+        </button>
+
+        <!-- Theme Toggle (Dark / Light) -->
+        <button id="themeToggleBtn" class="btn btn-icon" title="Toggle theme (Dark / Light)" aria-label="Toggle Theme">
+          <!-- Sun Icon (visible in dark mode) -->
+          <svg class="theme-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/><path d="M12 20v2"/>
+            <path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/>
+            <path d="M2 12h2"/><path d="M20 12h2"/>
+            <path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+          </svg>
+          <!-- Moon Icon (visible in light mode) -->
+          <svg class="theme-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+
+        <!-- API Settings Modal Button -->
+        <button id="apiSettingsBtn" class="btn btn-icon" title="Configure OpenWeatherMap API Key" aria-label="API Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <form id="searchForm" class="search-form" role="search" novalidate>
+        <div class="search-input-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input
+            type="text"
+            id="cityInput"
+            class="search-input"
+            placeholder="Search city name (e.g. London, Tokyo, New York, Mumbai)..."
+            autocomplete="off"
+            spellcheck="false"
+            required
+          />
+          <button type="button" id="clearInputBtn" class="clear-input-btn hidden" title="Clear text" aria-label="Clear search input">
+            &times;
+          </button>
+        </div>
+        <button type="submit" id="searchSubmitBtn" class="btn btn-primary search-submit-btn">
+          <span>Search</span>
+        </button>
+        <button type="button" id="geoBtn" class="btn btn-secondary geo-btn" title="Detect current location" aria-label="Detect Current Location">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2v3"/><path d="M12 19v3"/>
+            <path d="M2 12h3"/><path d="M19 12h3"/>
+          </svg>
+          <span class="geo-btn-text">My Location</span>
+        </button>
+      </form>
+
+      <!-- Recent Searches Bar -->
+      <div id="recentSearchesContainer" class="recent-searches hidden">
+        <span class="recent-label">Recent:</span>
+        <div id="recentChips" class="recent-chips"></div>
+        <button id="clearHistoryBtn" class="btn-text-clear" title="Clear search history">Clear All</button>
+      </div>
+    </section>
+
+    <!-- Alert / Notification Banner -->
+    <div id="alertBox" class="alert-box hidden" role="alert">
+      <div class="alert-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <div id="alertMessage" class="alert-message"></div>
+      <button id="alertCloseBtn" class="alert-close" aria-label="Close alert">&times;</button>
+    </div>
+
+    <!-- API Key Notice Banner (Shown when no key is configured) -->
+    <div id="apiKeyBanner" class="api-key-banner hidden">
+      <div class="banner-content">
+        <div class="banner-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div>
+          <strong>OpenWeatherMap API Key Required</strong>
+          <p>Configure your free OpenWeatherMap API key to fetch real-time atmospheric data.</p>
+        </div>
+      </div>
+      <button id="openKeyModalBtn" class="btn btn-sm btn-accent">Configure API Key</button>
+    </div>
+
+    <!-- Loading State Indicator -->
+    <div id="loadingIndicator" class="loading-container hidden" aria-live="polite">
+      <div class="spinner"></div>
+      <p class="loading-text">Connecting to satellite network & fetching weather data...</p>
+    </div>
+
+    <!-- Welcome / Empty State Card -->
+    <section id="welcomeState" class="welcome-card card">
+      <div class="welcome-illustration">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2"/><path d="M12 21v2"/>
+          <path d="M4.22 4.22l1.42 1.42"/><path d="M18.36 18.36l1.42 1.42"/>
+          <path d="M1 12h2"/><path d="M21 12h2"/>
+          <path d="M4.22 19.78l1.42-1.42"/><path d="M18.36 5.64l1.42-1.42"/>
+        </svg>
+      </div>
+      <h2 class="welcome-title">Real-Time Weather Intelligence</h2>
+      <p class="welcome-desc">
+        Explore global atmospheric conditions with precision. Enter a city name above, choose your current location, or tap one of the popular destinations below:
+      </p>
+      <div class="quick-pills">
+        <button class="pill-btn" data-city="London">London</button>
+        <button class="pill-btn" data-city="New York">New York</button>
+        <button class="pill-btn" data-city="Tokyo">Tokyo</button>
+        <button class="pill-btn" data-city="Paris">Paris</button>
+        <button class="pill-btn" data-city="Bengaluru">Bengaluru</button>
+        <button class="pill-btn" data-city="Sydney">Sydney</button>
+      </div>
+    </section>
+
+    <!-- Main Weather Dashboard Section -->
+    <main id="weatherDashboard" class="weather-dashboard hidden">
+      <!-- Hero Weather Overview Card -->
+      <section class="card hero-card">
+        <div class="hero-top">
+          <div class="location-group">
+            <div class="location-header">
+              <svg class="pin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <h2 id="cityName" class="city-name">City Name</h2>
+              <span id="countryCode" class="country-badge">US</span>
+            </div>
+            <p id="localDateTime" class="local-datetime">Friday, Oct 9 &bull; 12:00 PM</p>
+          </div>
+
+          <button id="refreshBtn" class="btn btn-icon btn-refresh" title="Refresh live weather" aria-label="Refresh Weather">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+              <path d="M16 21h5v-5"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="hero-main">
+          <div class="hero-temp-block">
+            <div class="temp-display">
+              <span id="tempValue" class="temp-value">--</span>
+              <span id="tempUnit" class="temp-unit">°C</span>
+            </div>
+            <p id="weatherDesc" class="weather-desc">Clear Sky</p>
+            <div class="temp-range">
+              <span title="Maximum Temperature">High: <strong id="tempMax">--</strong></span>
+              <span class="range-separator">&bull;</span>
+              <span title="Minimum Temperature">Low: <strong id="tempMin">--</strong></span>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <img id="weatherIcon" class="weather-icon" src="" alt="Weather condition icon" />
+          </div>
+        </div>
+      </section>
+
+      <!-- 6-Metric Atmospheric Conditions Grid -->
+      <section class="metrics-grid" aria-label="Detailed Weather Conditions">
+        <!-- 1. Feels Like -->
+        <article class="card metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Feels Like</span>
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value-wrap">
+            <span id="feelsLikeValue" class="metric-value">--</span>
+            <span class="metric-subtext" id="feelsLikeFeedback">Comfort index</span>
+          </div>
+        </article>
+
+        <!-- 2. Humidity -->
+        <article class="card metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Humidity</span>
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value-wrap">
+            <span id="humidityValue" class="metric-value">--%</span>
+            <span class="metric-subtext" id="humidityFeedback">Relative moisture</span>
+          </div>
+        </article>
+
+        <!-- 3. Wind Speed & Direction -->
+        <article class="card metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Wind Speed</span>
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/>
+                <path d="M9.6 4.6A2 2 0 1 1 11 8H2"/>
+                <path d="M12.6 19.4A2 2 0 1 0 14 16H2"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value-wrap">
+            <span id="windValue" class="metric-value">-- km/h</span>
+            <span class="metric-subtext" id="windDirection">Direction: --</span>
+          </div>
+        </article>
+
+        <!-- 4. Barometric Pressure -->
+        <article class="card metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Pressure</span>
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value-wrap">
+            <span id="pressureValue" class="metric-value">-- hPa</span>
+            <span class="metric-subtext" id="pressureFeedback">Sea-level pressure</span>
+          </div>
+        </article>
+
+        <!-- 5. Visibility -->
+        <article class="card metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Visibility</span>
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value-wrap">
+            <span id="visibilityValue" class="metric-value">-- km</span>
+            <span class="metric-subtext" id="visibilityFeedback">Sightline distance</span>
+          </div>
+        </article>
+
+        <!-- 6. Sunrise & Sunset -->
+        <article class="card metric-card">
+          <div class="metric-header">
+            <span class="metric-label">Sun Schedule</span>
+            <div class="metric-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v6"/><path d="m4.93 10.93 4.24-4.24"/>
+                <path d="M2 18h20"/><path d="M20 18a8 8 0 1 0-16 0"/>
+                <path d="m14.83 6.69 4.24 4.24"/>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value-wrap sun-wrap">
+            <div class="sun-item">
+              <span class="sun-tag">Sunrise</span>
+              <strong id="sunriseValue" class="sun-time">--:-- AM</strong>
+            </div>
+            <div class="sun-divider"></div>
+            <div class="sun-item">
+              <span class="sun-tag">Sunset</span>
+              <strong id="sunsetValue" class="sun-time">--:-- PM</strong>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- Footer Attribution -->
+    <footer class="app-footer">
+      <p>
+        <strong>Syntecxhub Internship</strong> &bull; Project 1: Weather App
+      </p>
+      <p class="footer-subtext">
+        Live data via <a href="https://openweathermap.org/" target="_blank" rel="noopener noreferrer">OpenWeatherMap API</a>
+        &bull; Built with semantic HTML5, modern CSS3 &amp; Vanilla JavaScript
+      </p>
+    </footer>
+  </div>
+
+  <!-- API Key Modal Dialog -->
+  <div id="apiKeyModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 2l-2 2m-1.5 6.1L19 8l-4-4-2.1 1.5M15.5 8.5L9 15M5 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
+            </svg>
+          </div>
+          <h2 id="modalTitle" class="modal-title">API Key Settings</h2>
+        </div>
+        <button id="closeModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-desc">
+          SkyPulse queries the OpenWeatherMap REST API directly. Enter your personal API key below to enable live searches. The key is securely stored in your browser's <code>localStorage</code>.
+        </p>
+
+        <div class="form-group">
+          <label for="apiKeyInputField" class="form-label">OpenWeatherMap API Key (32 characters)</label>
+          <div class="input-password-wrapper">
+            <input
+              type="password"
+              id="apiKeyInputField"
+              class="form-input"
+              placeholder="Paste 32-character key here..."
+              autocomplete="off"
+            />
+            <button type="button" id="toggleKeyVisibilityBtn" class="toggle-visibility-btn" title="Show/Hide key" aria-label="Toggle Key Visibility">
+              <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <span id="keyValidationMsg" class="validation-msg"></span>
+        </div>
+
+        <div class="api-help-box">
+          <h3 class="help-title">How to get your free API key:</h3>
+          <ol class="help-steps">
+            <li>Create an account at <a href="https://home.openweathermap.org/users/sign_up" target="_blank" rel="noopener noreferrer">openweathermap.org</a>.</li>
+            <li>Go to the <strong>API keys</strong> tab in your profile.</li>
+            <li>Copy your default 32-character key and paste it above.</li>
+            <li><em>Note: Brand new keys can take 10 to 60 minutes to activate on OpenWeatherMap's servers.</em></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="removeKeyBtn" class="btn btn-outline-danger">Clear Key</button>
+        <div class="footer-actions-right">
+          <button type="button" id="cancelModalBtn" class="btn btn-secondary">Cancel</button>
+          <button type="button" id="saveKeyBtn" class="btn btn-primary">Save & Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript File -->
+  <script src="script.js"></script>
+</body>
+</html>
